@@ -1,0 +1,9 @@
+ui/coverage
+ui/dist
+ui/node_modules
+
+backend/coverage
+backend/dist
+backend/node_modules
+
+.idea
