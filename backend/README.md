@@ -56,6 +56,10 @@ To do this at scale, I would want to host this within an EC2 instance within AWS
 deal with any demand. Logging could be monitored on Cloudwatch, but this would require adding a module such like Winston to handle what to log and what level.
 
 ## Potential Improvements / Issues Encountered
+
+- **Handling large files** - I understand that a better solution needs to be in place than pushing the video to Git, as the file size is large, and it is
+  something I would look into as one of the first improvements
+  
 - **CI/CD** - An improvement would be to add the project to a Gitlab project, which would run the relevant assurance steps
   as part of its pipeline i.e. Lint/Unit/Integration/Audit testing. This could then publish to AWS to be hosted.
   
