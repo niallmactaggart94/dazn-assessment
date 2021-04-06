@@ -1,0 +1,29 @@
+{
+  "name": "dazn-backend",
+  "version": "1.0.0",
+  "description": "Will serve up a video to the frontend if the user has less than 3 concurrent streams running.",
+  "main": "app/index.js",
+  "scripts": {
+    "start": "node app/index.js",
+    "test:lint": "./node_modules/.bin/eslint app/**/*.js",
+    "test:lint:fix": "./node_modules/.bin/eslint app/**/*.js --fix",
+    "test:unit": "jest --testEnvironment=node ./test/unit/**/*.spec.js --coverage",
+    "test:integration": "jest --testEnvironment=node --verbose --forceExit ./test/integration/*.spec.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.15.2",
+    "lodash": "^4.17.20",
+    "mongoose": "5.11.15",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "jest": "^26.6.3",
+    "node-mocks-http": "^1.8.1",
+    "supertest": "^6.1.3"
+  },
+  "author": "Niall MacTaggart",
+  "license": "ISC"
+}
