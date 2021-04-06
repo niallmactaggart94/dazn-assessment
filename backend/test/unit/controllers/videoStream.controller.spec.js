@@ -20,6 +20,12 @@ jest.mock('../../../app/helpers/sessionHandler', () => {
     }
 });
 
+jest.mock('../../../app/helpers/logger', () => {
+    return {
+        log: jest.fn()
+    }
+});
+
 jest.mock('fs');
 
 beforeEach(() => {

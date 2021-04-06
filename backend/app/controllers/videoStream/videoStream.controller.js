@@ -2,6 +2,7 @@ const fs = require("fs");
 const _ = require("lodash");
 const errorHandler = require('../../helpers/errorHandler');
 const sessionHandler = require('../../helpers/sessionHandler');
+const logger = require('../../helpers/logger');
 
 /**
  * @param app
@@ -111,6 +112,12 @@ const getVideo = (req, res) => {
         const userSessions = getUserSessions(req.app, userID);
         if (userSessions.length >= 3 && !userSessions.includes(streamID)) {
             const message = `Too many requests for user ${userID}`;
+
+            logger.log({
+                level: 'error',
+                message
+            });
+
             return res.status(429).send({ message });
         }
 

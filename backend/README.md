@@ -53,7 +53,8 @@ The other 2 are for viewing and removing streams for a specified user.
 
 ## Scalability / Logging
 To do this at scale, I would want to host this within an EC2 instance within AWS, ensuring that it could be assigned an ASG and have load balancers sit behind them to
-deal with any demand. Logging could be monitored on Cloudwatch, but this would require adding a module such like Winston to handle what to log and what level.
+deal with any demand. Logging is handled by Winston and can be used to determine how to handle it per environment, this could be used with Cloudwatch to view/debug any issues
+in production.
 
 ## Potential Improvements / Issues Encountered
 
