@@ -38,10 +38,10 @@ export class HomePageComponent implements OnInit {
     }
 
     async getCurrentStreams() {
-        const validUserID = this.validUserID();
+        this.validationError = !this.validUserID();
 
-        if (!validUserID) {
-            return this.validationError = true;
+        if (this.validationError) {
+            return;
         }
 
         this.streams = await this.service.getStreams(this.userID);
