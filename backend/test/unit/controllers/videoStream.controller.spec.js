@@ -4,6 +4,7 @@ const httpMocks = require("node-mocks-http");
 const ctrl = require("../../../app/controllers/videoStream/videoStream.controller");
 const errorHandler = require('../../../app/helpers/errorHandler');
 const sessionHandler = require('../../../app/helpers/sessionHandler');
+const fs = require('fs');
 let req, res, app;
 
 jest.mock('../../../app/helpers/errorHandler', () => {
@@ -18,6 +19,8 @@ jest.mock('../../../app/helpers/sessionHandler', () => {
         removeSession: jest.fn()
     }
 });
+
+jest.mock('fs');
 
 beforeEach(() => {
     app = {
@@ -37,6 +40,9 @@ beforeEach(() => {
     });
 
     res = httpMocks.createResponse();
+    fs.statSync.mockImplementationOnce(() => {
+        return {size: '50'}
+    });
 
     spyOn(res, "send");
 
@@ -205,13 +211,23 @@ describe("Controller: videoStream", function () {
             expect(errorHandler.sendError).toHaveBeenCalledWith(res, 400, 'Requires userID/streamID');
         });
 
-        it.skip("Should send an error if there are too many streams", async () => {
+        it("Should send an error if there are too many streams", async () => {
             //Arrange
             req.headers.range = 'bytes=9458761-';
             req.query.userID = '123456';
-            req.query.streamID = '0a2752c1-254d-4326-a851-e54267523734';
-            app.get.mockImplementationOnce(() => ['0a2752c1-254d-4326-a851-e54267523734', '0a2752c1-254d-4326-a851-e54267523724', '0a2752c1-254d-4326-a851-e54267523712']);
+            req.query.streamID = '0a2752c1-254d-4326-a851-e54267523799';
+            const user = {
+                id: '123456',
+                streams: ['0a2752c1-254d-4326-a851-e54267523734', '0a2752c1-254d-4326-a851-e54267523724', '0a2752c1-254d-4326-a851-e54267523712']
+            };
 
+            app.get.mockImplementationOnce(() => [user]);
+
+            fs.createReadStream.mockImplementationOnce(() => {
+                return {
+                    on: jest.fn().mockImplementationOnce(async (id, callback) => await callback())
+                }
+            })
 
             //Act
             ctrl.getVideo(req, res);
@@ -221,14 +237,50 @@ describe("Controller: videoStream", function () {
 
         });
 
-        it.skip("Should pipe the video if there are enough streams", () => {
+        it("Should pipe the video if there are already 3 streams, but the ID is already in the list", () => {
 
             //Arrange
             req.headers.range = 'bytes=9458761-';
             req.query.userID = '123456';
             req.query.streamID = '0a2752c1-254d-4326-a851-e54267523734';
-            app.get.mockImplementationOnce(() => ['0a2752c1-254d-4326-a851-e54267523734']);
+            const user = {
+                id: '123456',
+                streams: ['0a2752c1-254d-4326-a851-e54267523734', '0a2752c1-254d-4326-a851-e54267523724', '0a2752c1-254d-4326-a851-e54267523712']
+            };
 
+            app.get.mockImplementationOnce(() => [user]);
+
+            fs.createReadStream.mockImplementationOnce(() => {
+                return {
+                    on: jest.fn().mockImplementationOnce(async (id, callback) => await callback())
+                }
+            })
+
+            //Act
+            ctrl.getVideo(req, res);
+
+            //Assert
+            expect(res._getStatusCode()).toEqual(206);
+        });
+
+        it("Should pipe the video if there are enough streams", () => {
+
+            //Arrange
+            req.headers.range = 'bytes=9458761-';
+            req.query.userID = '123456';
+            req.query.streamID = '0a2752c1-254d-4326-a851-e54267523734';
+            const user = {
+                id: '123456',
+                streams: ['0a2752c1-254d-4326-a851-e54267523712']
+            };
+
+            app.get.mockImplementationOnce(() => [user]);
+
+            fs.createReadStream.mockImplementationOnce(() => {
+                return {
+                    on: jest.fn().mockImplementationOnce(async (id, callback) => await callback())
+                }
+            })
 
             //Act
             ctrl.getVideo(req, res);

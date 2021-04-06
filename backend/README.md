@@ -10,7 +10,7 @@ This project uses the following modules:
     - Uses fs to create a read stream for the client to consume the video
     - Stores user sessions in app memory
 - **Testing:** 
-    - Unit tests are written in Jest, making use of node-mocks-http to mock the request and response. 
+    - Unit tests are written in Jest, making use of node-mocks-http to mock the request and response, providing full coverage.
     - Code styling is checked via eslint 
   
 ## Starting the API
@@ -70,4 +70,7 @@ deal with any demand. Logging could be monitored on Cloudwatch, but this would r
 
 - **Handling sessions** - I opted to let the client terminate sessions, after I found it increasingly difficult with my approach to find a means
   to know when the video had either stopped, or the client had disconnected. More information on this is found within the UI's README.
+  
+- **Integration/e2e testing** - I opted not to write e2e tests purely as each API endpoint relies on the video, which is called from the client using HTML5 video,
+  therefore I thought it was best to leave them out, however if I were to add them I would have used supertest.
   
